@@ -10,7 +10,12 @@ name: daily-radar
 on:
   schedule:
     - cron: "40 10 * * 1-5"   # 19:40 KST, 평일
-  workflow_dispatch: {}        # 수동 실행 (테스트용)
+  workflow_dispatch:           # 수동 실행 (테스트용)
+    inputs:
+      force:
+        description: "중복 발송 방지 무시하고 강제 발송 (테스트)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write              # 발송 마커(data/last_sent.txt) 커밋용
@@ -41,7 +46,7 @@ jobs:
           printf '{ "bot_token": "%s", "chat_id": "%s" }\n' "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}" > config.json
 
       - name: Run pipeline (dedup/holiday checks inside)
-        run: python run_fallback.py
+        run: python run_fallback.py ${{ inputs.force && '--force' || '' }}
 
       - name: Commit sent marker & data
         if: always()

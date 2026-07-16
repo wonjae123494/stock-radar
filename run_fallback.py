@@ -32,8 +32,11 @@ def main():
         subprocess.run(["git", "pull", "--ff-only"], check=False, capture_output=True, timeout=60)
 
     # 1) 오늘 이미 발송됐으면 스킵 (Claude Code 예약이 먼저 돌았거나 이전 폴백)
+    #    --force: 테스트용 — 중복 방지를 무시하고 강제 실행
     sent_marker = os.path.join(HERE, "data", "last_sent.txt")
-    if os.path.exists(sent_marker):
+    if "--force" in sys.argv:
+        print("--force: 중복 발송 방지 무시하고 진행")
+    elif os.path.exists(sent_marker):
         try:
             if open(sent_marker, encoding="utf-8").read().strip() == TODAY:
                 print(f"오늘({TODAY}) 이미 발송됨 — 폴백 스킵")
