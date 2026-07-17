@@ -8,6 +8,8 @@ S = D["stocks"]
 FD = D["flow_dates"]
 NOW = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 BANNER = D.get("market_note", "")  # 시장 상황 한 줄 (뉴스 분석 시 data.json에 market_note로 기입)
+if D.get("source") == "naver":
+    BANNER = (BANNER + " " if BANNER else "") + "(클라우드 자동판 — 과거 일자 수급 금액은 네이버 수량×종가 기반 추정치)"
 
 def won(n): return f"{n:,}"
 

@@ -22,10 +22,13 @@ def _load_env():
 
 _load_env()
 
+# pykrx는 import 시점에 KRX 로그인을 시도한다. KRX는 해외 IP를 차단하므로
+# GitHub Actions 등에서는 여기서 예외가 난다 → 네이버 우회 수집으로 자동 전환.
+PYKRX_ERR = None
 try:
     from pykrx import stock
-except ImportError:
-    sys.exit("pykrx가 필요합니다: pip install pykrx")
+except Exception as e:  # ImportError뿐 아니라 로그인 실패(JSONDecodeError 등)도 잡는다
+    PYKRX_ERR = f"{type(e).__name__}: {e}"
 
 EOK = 100_000_000  # 억원
 
@@ -55,8 +58,24 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=4)
     ap.add_argument("--top", type=int, default=30, help="기관 순매수 상위 N을 후보 풀로")
+    ap.add_argument("--naver", action="store_true", help="KRX 대신 네이버 우회 수집 강제 (테스트용)")
     args = ap.parse_args()
 
+    if args.naver or PYKRX_ERR or os.environ.get("NAVER_FALLBACK"):
+        if PYKRX_ERR:
+            print(f"pykrx 사용 불가({PYKRX_ERR[:120]})")
+        import collect_naver
+        collect_naver.collect(args.days, args.top)
+        return
+
+    try:
+        collect_krx(args)
+    except Exception as e:
+        print(f"KRX 수집 실패({type(e).__name__}: {e}) → 네이버 우회 수집으로 전환")
+        import collect_naver
+        collect_naver.collect(args.days, args.top)
+
+def collect_krx(args):
     dates = trading_dates(args.days)
     latest = dates[-1]
     print(f"거래일: {dates}")
