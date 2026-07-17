@@ -70,10 +70,11 @@ def main():
     send_text("\n".join(lines))
     send_file(os.path.join(HERE, "data", "index.html"),
               caption=f"수급 레이더 대시보드 ({d['base_date']}) — 브라우저로 열어보세요")
-    # 발송 성공 표식: 같은 날 중복 발송(예약 작업 + Windows 폴백 + GitHub Actions)을 방지하기 위해 기록
+    # 발송 성공 표식: 어떤 '기준일 데이터'까지 발송했는지 기록 (예약 작업 + Windows 폴백 + GitHub Actions
+    # 사이의 중복 발송 방지). 14시 발송 체제에서는 전일 기준 데이터를 보내므로 날짜가 아닌 base_date를 쓴다.
     try:
         with open(os.path.join(HERE, "data", "last_sent.txt"), "w", encoding="utf-8") as f:
-            f.write(today)
+            f.write(d["base_date"])
     except OSError:
         pass
     # 로컬에서 발송했으면 마커를 GitHub에도 푸시 → 19:40 GitHub Actions가 보고 스킵

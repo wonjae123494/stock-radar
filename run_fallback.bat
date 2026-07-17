@@ -1,6 +1,6 @@
 @echo off
-REM ==== Stock Radar 폴백 (평일 19:45, Windows 작업 스케줄러) ====
-REM Claude Code 앱이 꺼져 있어 19:05 예약이 누락된 날을 대비한 보조 실행.
+REM ==== Stock Radar 폴백 (평일 14:35, Windows 작업 스케줄러) ====
+REM 14:00 Claude Code 예약·14:20 GitHub Actions가 모두 누락된 날을 대비한 보조 실행.
 REM 오늘 이미 발송됐으면 run_fallback.py 안에서 스스로 스킵한다.
 chcp 65001 >nul
 set PYTHONUTF8=1

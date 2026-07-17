@@ -1,15 +1,15 @@
 # 수급 쌍끌이 레이더 — 클라우드 폴백 발송 (PC가 꺼져 있어도 매일 발송)
 #
-# 매 평일 19:40 KST(10:40 UTC)에 실행된다.
-# 로컬(Claude Code 19:05 예약)이 이미 발송해서 data/last_sent.txt 가 오늘 날짜면
-# run_fallback.py 가 스스로 스킵하므로 이중 발송되지 않는다.
+# 매 평일 14:20 KST(05:20 UTC)에 실행된다. 14시대 실행은 장중이므로 '전일 종가' 기준 데이터다.
+# 로컬(Claude Code 14:00 예약)이 이미 같은 기준일을 발송해서 data/last_sent.txt 에 그 기준일이
+# 적혀 있으면 run_fallback.py 가 스스로 스킵하므로 이중 발송되지 않는다.
 # 뉴스 분석(why/strategy/drop_why)은 로컬 Claude 실행에서만 새로 작성되며,
 # 이 워크플로우는 수급 데이터·차트 중심의 기본 버전을 보낸다.
 name: daily-radar
 
 on:
   schedule:
-    - cron: "40 10 * * 1-5"   # 19:40 KST, 평일
+    - cron: "20 5 * * 1-5"    # 14:20 KST, 평일
   workflow_dispatch:           # 수동 실행 (테스트용)
     inputs:
       force:
