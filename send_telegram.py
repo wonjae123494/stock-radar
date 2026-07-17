@@ -5,8 +5,10 @@
 config.json 의 bot_token / chat_id 로 요약 메시지 + 대시보드 HTML 파일을 보낸다.
 
 사용:
-  python send_telegram.py            # 요약 + index.html 발송
-  python send_telegram.py --error   # 파이프라인 실패 알림만 발송
+  python send_telegram.py                     # 요약 + index.html 발송
+  python send_telegram.py --error            # 파이프라인 실패 알림만 발송
+  python send_telegram.py --textfile 경로     # 파일 내용을 텍스트 메시지로 발송 (휴장일 전망 리포트 등,
+                                              #  HTML 태그 <b>/<i> 사용 가능, 마커 미기록)
 설정(config.json):
   { "bot_token": "123456:ABC-...", "chat_id": "123456789" }
 """
@@ -48,6 +50,16 @@ def main():
     today = datetime.date.today().strftime("%Y-%m-%d")
     if "--error" in sys.argv:
         send_text(f"⚠️ <b>수급 레이더 {today}</b>\n자동 갱신 실패 — logs 폴더 확인 후 클로드 코드에 '오류 고쳐줘'라고 요청하세요.")
+        return
+
+    if "--textfile" in sys.argv:
+        path = sys.argv[sys.argv.index("--textfile") + 1]
+        text = open(path, encoding="utf-8").read().strip()
+        if not text:
+            sys.exit("--textfile 내용이 비어 있습니다")
+        # 텔레그램 텍스트 한도(4096자) 보호
+        send_text(text[:4000])
+        print("텍스트 리포트 발송 완료")
         return
 
     d = json.load(open(os.path.join(HERE, "data", "recommendations.json"), encoding="utf-8"))
