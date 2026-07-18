@@ -267,8 +267,10 @@ html{{scroll-behavior:smooth}}
 <a class="top-btn" href="#top">▲ 목차</a>
 </div></body></html>"""
 
-import os
+import os, shutil
 open("data/index.html", "w", encoding="utf-8").write(html)
 os.makedirs("data/archive", exist_ok=True)
 open(f"data/archive/index-{D['base_date']}.html", "w", encoding="utf-8").write(html)
-print("data/index.html 저장:", len(html), "bytes", f'(archive/index-{D["base_date"]}.html 복사본 포함)')
+# 성과 평가(stock-radar-evaluator)용 일별 추천 스냅샷
+shutil.copyfile("data/recommendations.json", f"data/archive/recommendations-{D['base_date']}.json")
+print("data/index.html 저장:", len(html), "bytes", f'(archive/index-{D["base_date"]}.html + recommendations 스냅샷 포함)')
