@@ -293,3 +293,11 @@ open(f"data/archive/index-{D['base_date']}.html", "w", encoding="utf-8").write(h
 # 성과 평가(stock-radar-evaluator)용 일별 추천 스냅샷
 shutil.copyfile("data/recommendations.json", f"data/archive/recommendations-{D['base_date']}.json")
 print("data/index.html 저장:", len(html), "bytes", f'(archive/index-{D["base_date"]}.html + recommendations 스냅샷 포함)')
+
+# 홈 허브(일자별 목록 + 점검 리포트) 갱신
+try:
+    import build_home
+    build_home.build()
+    print("data/home.html 갱신 완료")
+except Exception as e:
+    print(f"(경고) home.html 갱신 실패 — 무시하고 계속: {e}")

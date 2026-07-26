@@ -314,6 +314,13 @@ def main():
     print(report.replace("<b>", "").replace("</b>", "").replace("<i>", "").replace("</i>", ""))
     print("\ndata/eval_report.txt · data/feedback.md 저장 완료")
 
+    # 홈 허브의 '점검 리포트' 섹션 갱신
+    try:
+        import build_home
+        build_home.build()
+    except Exception as e:
+        print(f"(경고) home.html 갱신 실패 — 무시하고 계속: {e}")
+
     if "--send" in sys.argv:
         marker = "data/last_eval.txt"
         if "--force" not in sys.argv and os.path.exists(marker) \
