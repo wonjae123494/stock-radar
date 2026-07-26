@@ -145,6 +145,17 @@ for s in S:
 
 banner_html = f'<div class="banner"><b>시장 상황</b> — {BANNER}</div>' if BANNER else ""
 
+R = D.get("regime")
+regime_html = ""
+if R:
+    cls = {"위험": "rg-danger", "주의": "rg-caution", "정상": "rg-normal"}.get(R["label"], "rg-normal")
+    reasons = " · ".join(R.get("reasons") or [])
+    regime_html = (f'<div class="regime {cls}"><div class="rg-top">{R["emoji"]} 시장 레짐 '
+                   f'<b>{R["label"]}</b> — 신규 진입 권고 노출 <b>{R["exposure"]}%</b></div>'
+                   f'{f"<div class=rg-why>{reasons}</div>" if reasons else ""}'
+                   f'<div class="rg-note">지수 5일수익·20일선·변동성 기반 기계적 신호이며, '
+                   f'종목 점수와 무관한 참고 정보입니다(투자 권유 아님).</div></div>')
+
 toc_items = "".join(
     f'<a class="toc-i{" toc-ref" if not s.get("per") else ""}" href="#s-{s["code"]}">'
     f'<span class="toc-r">{s["rank"]}</span>{s["name"]}'
@@ -172,6 +183,13 @@ h1{{font-size:24px;margin:0 0 4px}}.sub{{color:var(--ink2);margin:0 0 14px}}
 .banner{{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--red);
 border-radius:10px;padding:12px 16px;margin:14px 0;color:var(--ink2)}}
 .banner b{{color:var(--ink)}}
+.regime{{border-radius:10px;padding:12px 16px;margin:14px 0;border:1px solid var(--border)}}
+.regime .rg-top{{font-size:15px;color:var(--ink)}}
+.regime .rg-why{{margin-top:3px;font-size:13px;color:var(--ink2)}}
+.regime .rg-note{{margin-top:5px;font-size:11.5px;color:var(--muted)}}
+.rg-danger{{background:color-mix(in srgb,var(--red) 12%,var(--surface));border-left:4px solid var(--red)}}
+.rg-caution{{background:color-mix(in srgb,var(--warn) 12%,var(--surface));border-left:4px solid var(--warn)}}
+.rg-normal{{background:color-mix(in srgb,var(--good) 10%,var(--surface));border-left:4px solid var(--good)}}
 .steps{{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 26px}}
 .step{{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--ink2)}}
 .step b{{color:var(--ink)}}
@@ -253,6 +271,7 @@ html{{scroll-behavior:smooth}}
 </style></head><body><div class="wrap" id="top">
 <h1>📡 수급 쌍끌이 레이더 <span class="code">{D["base_date"]}</span></h1>
 <p class="sub">기관 순매수 상위 → 외국인 동시 순매수 → 뉴스·공시 분석 → 매수 후보 &nbsp;|&nbsp; 수급 기준일 <b>{D["base_date"]}</b> · 시세 {D["quote_time"]} · 생성 {NOW}</p>
+{regime_html}
 {banner_html}
 {toc_html}
 <div class="steps"><span class="step"><b>1</b> 기관 순매수 상위</span><span class="step"><b>2</b> 외국인 동시 순매수</span><span class="step"><b>3</b> 연속성·강도·우량주 필터</span><span class="step"><b>4</b> 뉴스 분석 → 매수 전략</span></div>

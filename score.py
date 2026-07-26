@@ -53,6 +53,15 @@ for i, s in enumerate(out, 1):
     s["rank"] = i
 
 D["stocks"] = out
+
+# 시장 레짐 판정 (종목 점수와 무관 — 비중 권고·경고용 참고 신호). 실패해도 파이프라인은 계속.
+try:
+    import regime
+    D["regime"] = regime.assess()
+except Exception as e:
+    print(f"(경고) 레짐 판정 실패 — 무시하고 계속: {e}")
+    D["regime"] = None
+
 json.dump(D, open("data/recommendations.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 for s in out:
     print(f'{s["rank"]:2d}. {s["name"]:10s} {s["score_total"]:5.1f}점  52주위치 {s["pos"]}%  4일합 {s["total_flow"]:+,}억')

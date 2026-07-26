@@ -65,6 +65,12 @@ def main():
     d = json.load(open(os.path.join(HERE, "data", "recommendations.json"), encoding="utf-8"))
     top = d["stocks"][:5]
     lines = [f"📡 <b>수급 쌍끌이 레이더</b> — 기준일 {d['base_date']}"]
+    R = d.get("regime")
+    if R:
+        rc = f"{R['emoji']} 시장 레짐 <b>{R['label']}</b> — 권고 노출 {R['exposure']}%"
+        if R.get("reasons"):
+            rc += f" ({R['reasons'][0]})"
+        lines.append(rc)
     if d.get("market_note"):
         lines.append(f"<i>{d['market_note'][:120]}</i>")
     lines.append("")
