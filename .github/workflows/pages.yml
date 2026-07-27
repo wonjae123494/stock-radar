@@ -1,0 +1,41 @@
+# GitHub Pages 배포 — data/ 폴더를 사이트로 발행 (홈 허브를 랜딩으로)
+# 데이터가 갱신되어 data/에 커밋되면(매일/매주 자동) 자동 재배포된다.
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["data/**", ".github/workflows/pages.yml"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Build site (data/ → 사이트 루트, home.html을 랜딩 index로)
+        run: |
+          mkdir -p _site
+          cp -r data/. _site/
+          cp data/home.html _site/index.html
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4

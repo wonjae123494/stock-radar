@@ -2160,5 +2160,15 @@
    "rank": 43
   }
  ],
- "source": "naver"
+ "source": "naver",
+ "regime": {
+  "label": "주의",
+  "exposure": 50,
+  "emoji": "⚠️",
+  "points": 2,
+  "reasons": [
+   "KOSPI 20일선 이탈·변동성 4.2%",
+   "KOSDAQ 20일선 이탈·변동성 3.5%"
+  ]
+ }
 }
