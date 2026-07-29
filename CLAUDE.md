@@ -56,6 +56,15 @@ recommendations.json의 base_date가 이미 발송된 경우(data/last_sent.txt�
 5. 전망은 **참고 정보**다 — 추천 종목 선정 로직(점수 모델)에는 어떤 영향도 주지 않는다.
    오늘이 거래일인데 base_date가 이미 발송된 경우(늦은 재실행 등)는 전망 없이 그냥 스킵한다.
 
+## 홈페이지 (GitHub Pages, 공개)
+
+- 공개 URL: **https://wonjae123494.github.io/stock-radar/** (랜딩=홈 허브)
+- `build_home.py`가 `data/home.html` 생성(일자별 분석 목록 + 주기적 점검 리포트).
+  build_html.py(매일)·evaluate.py(매주)가 끝에서 자동 호출.
+- `.github/workflows/pages.yml`이 data/ 갱신 커밋 시마다 자동 재배포(home.html을 랜딩 index로).
+- ⚠️ 저장소는 **공개(public)**다. `.env`/`config.json`은 gitignore·Secrets로만 관리 —
+  절대 커밋 금지(공개 저장소이므로 유출 시 즉시 노출). 비밀값은 GitHub Secrets에만.
+
 ## 시장 레짐 필터 (regime.py) — 종목 점수와 무관한 참고 신호
 
 `score.py`가 `regime.assess()`를 호출해 결과를 recommendations.json의 `regime` 필드에 싣는다.
